@@ -39,12 +39,12 @@ class PutinTestExample extends Putin\TestCase {
     function testIsEquals(){
         $op1="yeah";
         $op2="yeah";
-        $this->assertEquals($op1, $op2, "yeah is equals to yeah");
+        $this->assertEquals($op1, $op2, "yeah is equal to yeah");
     }
     function testIsNotEquals(){
         $op1="yeah";
         $op2="nyeah";
-        $this->assertNotEquals($op1, $op2, "yeah is not equals to nyeah");
+        $this->assertNotEquals($op1, $op2, "yeah is not equal to nyeah");
     }
 }
 ```
