@@ -92,6 +92,114 @@ $customCli = new CliInterface("Executing {class}", "The method {method} resulted
 Putin\Putin::run($testCases, ExecutionTarget::CUSTOM, $customCli);
 ```
 
+Feel free to implement your own custom Putin\IRunInterface if you want to display the results of your unit tests in a different, perhaps better, way.
+```php
+interface IRunInterface {
+    function prepare();
+    function finish();
+    function caseInfo($case);
+    function caseClosed($case, $results);
+    function displayResults($results);
+}
+```
+
+```php
+//Example with no practical use that sends the results of the unit tests via mail as a csv file
+class CsvInterface implements Putin\IRunInterface {
+
+    const HEADER = "case,method,result,message\n";
+    const FILE_NAME = "results.csv";
+
+    private $outputFile;
+
+    function __construct(){
+    }
+
+    function prepare(){
+        echo "Starting Unit tests.\n";
+        $this->outputFile=fopen(CsvInterface::FILE_NAME, "w");
+        echo "results.csv created\n";
+        fwrite($this->outputFile, CsvInterface::HEADER);
+    }
+
+    function finish(){
+        fclose($this->outputFile);
+        send_email();
+        cleanup();
+    }
+
+    function caseInfo($case){
+        //do nothing
+    }
+
+    function caseClosed($case, $results){
+        $caseName = get_class($case);
+        foreach ($results as $result) {
+            $find = explode(",",CsvInterface::HEADER);
+            $replace = [$caseName, $result->caller, $result->result, $result->msg];
+            $row=str_replace($find, $replace, CsvInterface::HEADER);
+            fwrite($this->outputFile, $row);
+        }
+    }
+
+    function displayResults($results){
+        //do nothing
+    }
+
+    function cleanup(){
+        unlink($this->outputFile);
+    }
+
+    function send_email(){
+        $mailto = 'devops@company.com';
+        $subject = 'Unit test results';
+        $message = '';
+    
+        $content = file_get_contents($this->outputFile);
+        $content = chunk_split(base64_encode($content));
+    
+        // a random hash will be necessary to send mixed content
+        $separator = md5(time());
+    
+        // carriage return type (RFC)
+        $eol = "\r\n";
+    
+        // main header (multipart mandatory)
+        $headers = "From: CI System <ci@company.com>" . $eol;
+        $headers .= "MIME-Version: 1.0" . $eol;
+        $headers .= "Content-Type: multipart/mixed; boundary=\"" . $separator . "\"" . $eol;
+        $headers .= "Content-Transfer-Encoding: 7bit" . $eol;
+        $headers .= "This is a MIME encoded message." . $eol;
+    
+        // message
+        $body = "--" . $separator . $eol;
+        $body .= "Content-Type: text/plain; charset=\"iso-8859-1\"" . $eol;
+        $body .= "Content-Transfer-Encoding: 8bit" . $eol;
+        $body .= $message . $eol;
+    
+        // attachment
+        $body .= "--" . $separator . $eol;
+        $body .= "Content-Type: application/octet-stream; name=\"" . CsvInterface::FILE_NAME . "\"" . $eol;
+        $body .= "Content-Transfer-Encoding: base64" . $eol;
+        $body .= "Content-Disposition: attachment" . $eol;
+        $body .= $content . $eol;
+        $body .= "--" . $separator . "--";
+    
+        //SEND Mail
+        if (mail($mailto, $subject, $body, $headers)) {
+            echo "Email sent\n"; // or use booleans here
+        } else {
+            echo "Can't send the email\n";
+            print_r( error_get_last() );
+        }
+    }
+}
+
+
+Putin\Putin::run($testCases, ExecutionTarget::CUSTOM, new CsvInterface());
+```
+
+
 ## Screenshots
 ### Default CLI implementation
 ![](/screenshots/putin-cli.JPG)
