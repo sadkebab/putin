@@ -97,11 +97,11 @@ Putin\Putin::run($testCases, ExecutionTarget::CUSTOM, $customCli);
 ![](/screenshots/putin-cli.JPG)
 ### Default Web implementation
 ![](/screenshots/putin-web.JPG)
-## Notes
-<a name="n1"></a>
-<sup>[1]</sup> Putin is not available on any package/dependency manager yet.
 
 ## TODO
 * Add the project to packagist
 
+## Notes
+<a name="n1"></a>
+<sup>[1]</sup> Putin is not available on any package/dependency manager yet.
 
