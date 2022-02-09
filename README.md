@@ -2,7 +2,7 @@
 Putin is a compact and customizable Unit Test framework for PHP.
 
 ## Usage
-In order to use Putin for unit testing after you [include it\*](#n1) in your project you need to implement one or many classes that extend the abstract class **Putin\TestCase** and specify which methods are unit test entry points with the **addTest** function in their constructor.
+In order to use Putin for unit testing after you include it<sup>[1](#n1)</sup> in your project you need to implement one or many classes that extend the abstract class **Putin\TestCase** and specify which methods are unit test entry points with the **addTest** function in their constructor.
 
 ```php
 class PutinTestExample extends Putin\TestCase {
@@ -99,7 +99,7 @@ Putin\Putin::run($testCases, ExecutionTarget::CUSTOM, $customCli);
 ![](/screenshots/putin-web.JPG)
 ## Notes
 <a name="n1"></a>
-\* for the moment Putin is not available on any package/dependency manager yet
+<sup>[1]</sup> Putin is not available on any package/dependency manager yet.
 
 ## TODO
 * Add the project to packagist
